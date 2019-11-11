@@ -8,7 +8,6 @@ logging.basicConfig(filename="Logger(1).log", format="%(levelname)s - %(asctime)
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 import seaborn as sns
 sns.set_style('darkgrid')
 
@@ -70,9 +69,6 @@ print('Time to train the model: {} mins'.format(round(time() - t) / 60, 2))
 #print(w2v_model.score(sentences=sentences, total_sentences=len(sentences)))
 w2v_model.save("wiki.model")
 w2v_model.init_sims(replace=True)
-
-
-
 logging.info("\n")
 
 # T-SNE
