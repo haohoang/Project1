@@ -7,8 +7,6 @@ from collections import  defaultdict # For word frequency
 import logging # Setting upp the loggings to monitor gensim
 logging.basicConfig(format="%(levelname)s - %(asctime)s: %(message)s", datefmt = '%H:%M:%S', level=logging.INFO)
 
-
-
 def clean(doc):
     #logging.info("remove stop words &amp; punctuation, and lemmatize words")
     s_free = " ".join([i for i in doc.lower().split() if i not in stop])
@@ -37,7 +35,6 @@ for i, sent in enumerate(sentences):
 
 # Save to
 fname = "clean_wiki_corpus.txt"
-
 with open(fname,'a',encoding = 'utf-8') as f:
     for sent in sentences:
         for i in sent:
