@@ -4,18 +4,17 @@ from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from string import punctuation
 
-
 try:
     _create_unverified_https_context = ssl._create_unverified_context
 except AttributeError:
     pass
 else:
     ssl._create_default_https_context = _create_unverified_https_context
+
 nltk.download('wordnet')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('stopwords')
-
 
 stop = set(stopwords.words('english'))
 exclude = set(punctuation)
@@ -31,6 +30,38 @@ def nltk_tag_to_wordnet_tag(nltk_tag):
         return wordnet.ADV
     else:
         return None
+
+# POS_TAG
+def lemmatize_sentence_remain_tag(sentence):
+    lemmatizer = WordNetLemmatizer()
+    # tokenize the sentence and find the POS tag for each token
+    nltk_tagged = nltk.pos_tag(nltk.word_tokenize(sentence))
+    # tuple of (token, wordnet_tag)
+    wordnet_tagged = map(lambda x: (x[0], nltk_tag_to_wordnet_tag(x[1])), nltk_tagged)
+    lemmatized_sentence = []
+    for word, tag in wordnet_tagged:
+        if tag is None:
+            # if there is no available tag, append the token as is
+            lemmatized_sentence.append([word.lower(), tag])
+        else:
+            # else use the tag to lemmatize the token
+            lemmatized_sentence.append([lemmatizer.lemmatize(word, tag).lower(), tag])
+    return lemmatized_sentence
+
+def clean_remain_tag(doc):
+    lemm = lemmatize_sentence_remain_tag(doc)
+    s_free = [i for i in lemm if i[0] not in stop]
+    p_free = []
+    for word in s_free:
+      new_word = []
+      for ch in word[0]:
+        if ch not in exclude:
+          new_word.append(ch)
+      new_word = "".join(new_word)
+      word1 = new_word + "_" + str(word[1])
+      if(len(new_word) > 2):
+        p_free.append(word1)
+    return p_free
 
 # Bigram
 def clean_not_remain_tag(doc):
@@ -57,6 +88,17 @@ def lemmatize_sentence_not_retain_tag(sentence):
             #else use the tag to lemmatize the token
             lemmatized_sentence.append(lemmatizer.lemmatize(word.lower(), tag))
     return lemmatized_sentence
+
+def sent2Bigram(sent):
+    new_sent = []
+    new_sent.append('b_' + sent[0])
+    for i in range(len(sent)):
+        if i == len(sent) - 1:
+            temp = sent[i] + "_e"
+        else:
+            temp = sent[i] + "_" + sent[i+1]
+        new_sent.append(temp)
+    return new_sent
 
 # Write and save file
 def save(fname, sentences):
