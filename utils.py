@@ -3,8 +3,11 @@ import ssl
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from string import punctuation
+import logging
+logging.basicConfig(format="%(levelname)s - %(asctime)s: %(message)s", datefmt = '%H:%M:%S', level=logging.INFO)
 
-try:
+
+"""try:
     _create_unverified_https_context = ssl._create_unverified_context
 except AttributeError:
     pass
@@ -14,7 +17,7 @@ else:
 nltk.download('wordnet')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
-nltk.download('stopwords')
+nltk.download('stopwords')"""
 
 stop = set(stopwords.words('english'))
 exclude = set(punctuation)
@@ -103,7 +106,9 @@ def sent2Bigram(sent):
 # Write and save file
 def save(fname, sentences):
     with open(fname, 'w', encoding='utf-8') as f:
-        for sent in sentences:
+        for j, sent in enumerate(sentences):
+            if j % 1000 == 0:
+                logging.info("Write %d sentences", j)
             for i in sent:
                 f.write("%s " % i)
             f.write('\n')
@@ -111,8 +116,12 @@ def save(fname, sentences):
 # Read file
 def read(fname):
     sentences = []
+    i = 0
     with open(fname, 'r', encoding='utf-8') as f:
         while True:
+            if i % 1000 == 0:
+                logging.info("Read %d sentences", i)
+            i += 1
             sent = f.readline()
             if len(sent) == 0:
                 break

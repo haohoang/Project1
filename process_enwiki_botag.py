@@ -25,6 +25,4 @@ with open('bodoc3.txt', 'w') as f: #file ket qua
 
         f.write(article_txt) #ghi file
         article_txt = file.read(80000)
-    f.close()
-
-print("ok")
+   
